@@ -1,11 +1,11 @@
 const express = require("express");
+const { validationResult } = require("express-validator");
 const router = express.Router();
 const auth = require("./../../middleware/auth");
 const User = require("./../../models/User");
 const bcrypt = require ('bcryptjs')
 const jwt = require('jsonwebtoken')
 const config = require('config')
-const { check, validationResult } = require('express-validator');
 // check token auth
 router.get("/", auth, async (req, res) => {
   try {
@@ -57,7 +57,7 @@ router.post(
       jwt.sign(
         payload,
         config.get('jwtSecret'),
-        {expiresIn:360000},
+        {expriseIn:'5 days'},
         (err,token) =>{
             if(err) throw err;
             res.json({token})

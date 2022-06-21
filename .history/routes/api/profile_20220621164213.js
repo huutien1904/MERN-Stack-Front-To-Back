@@ -75,20 +75,20 @@ router.post(
     }
 
     console.log(skills)
-    // try {
-    //     // Using upsert option (creates new doc if no match is found):
-    //     let profile = await Profile.findOneAndUpdate(
-    //       { user: req.user.id },
-    //       { $set: profileFields },
-    //       { new: true, upsert: true, setDefaultsOnInsert: true }
-    //     );
-    //     await profile.save();
-    //     return res.json(profile);
+    try {
+        // Using upsert option (creates new doc if no match is found):
+        let profile = await Profile.findOneAndUpdate(
+          { user: req.user.id },
+          { $set: profileFields },
+          { new: true, upsert: true, setDefaultsOnInsert: true }
+        );
+        await profile.save();
+        return res.json(profile);
 
-    //   } catch (err) {
-    //     console.error(err.message);
-    //     return res.status(500).send('Server Error');
-    //   }
+      } catch (err) {
+        console.error(err.message);
+        return res.status(500).send('Server Error');
+      }
   }
 );
 

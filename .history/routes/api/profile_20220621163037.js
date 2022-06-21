@@ -44,11 +44,7 @@ router.post(
 
     // get fields req
     const {
-      company,
       website,
-      location,
-      bio,status,
-      githubusername,
       skills,
       youtube,
       twitter,
@@ -61,34 +57,43 @@ router.post(
 
     // // create profile
 
-    const profileFields = {};
+    const profileFields = {
+        user: req.user.id,
+        website:
+          website && website !== ''
+            ? normalize(website, { forceHttps: true })
+            : '',
+        skills: Array.isArray(skills)
+          ? skills
+          : skills.split(',').map((skill) => ' ' + skill.trim()),
+        ...rest
+    };
+    // socialFirlds object
 
-    profileFields.user = req.user.id;
-    if(company) profileFields.company = company;
-    if(website) profileFields.website = website;
-    if(location) profileFields.location = location;
-    if(bio) profileFields.bio = bio;
-    if(status) profileFields.status = status;
-    if(githubusername) profileFields.githubusername = githubusername;
-    if(skills) {
-        profileFields.skills = skills.split(',').map((skill) => ' ' + skill.trim())
+    const socialFields = {youtube,twitter,instagram,linkedin,facebook};
+
+    // normalize social fields to ensure valid url
+    for (const [key, value] of Object.entries(socialFields)) {
+        if (value && value.length > 0)
+          socialFields[key] = normalize(value, { forceHttps: true });
     }
 
-    console.log(skills)
-    // try {
-    //     // Using upsert option (creates new doc if no match is found):
-    //     let profile = await Profile.findOneAndUpdate(
-    //       { user: req.user.id },
-    //       { $set: profileFields },
-    //       { new: true, upsert: true, setDefaultsOnInsert: true }
-    //     );
-    //     await profile.save();
-    //     return res.json(profile);
+    profileFields.social = socialFields;
 
-    //   } catch (err) {
-    //     console.error(err.message);
-    //     return res.status(500).send('Server Error');
-    //   }
+    try {
+        // Using upsert option (creates new doc if no match is found):
+        let profile = await Profile.findOneAndUpdate(
+          { user: req.user.id },
+          { $set: profileFields },
+          { new: true, upsert: true, setDefaultsOnInsert: true }
+        );
+        await profile.save();
+        return res.json(profile);
+
+      } catch (err) {
+        console.error(err.message);
+        return res.status(500).send('Server Error');
+      }
   }
 );
 

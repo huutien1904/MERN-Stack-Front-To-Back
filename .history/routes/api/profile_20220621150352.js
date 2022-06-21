@@ -3,7 +3,6 @@ const router = express.Router();
 const auth = require("./../../middleware/auth");
 const Profile = require("../../models/Profile");
 const { check, validationResult } = require("express-validator");
-const normalize = require('normalize-url');
 
 // @route               POST api/profile/me
 // @desc                Get current users profile
@@ -28,7 +27,7 @@ router.get("/me", auth, async (req, res) => {
 });
 
 // @route               POST api/profile
-// @desc                Create or Update Profile
+// @desc                Create ỏ Update Profile
 // @access              Private
 
 router.post(
@@ -39,42 +38,48 @@ router.post(
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({ errors: errors.arrray() });
     }
 
-    // get fields req
-    const {
-      company,
-      website,
-      location,
-      bio,status,
-      githubusername,
-      skills,
-      youtube,
-      twitter,
-      instagram,
-      linkedin,
-      facebook,
-      // spread the rest 
-      ...rest
-    } = req.body;
+    // // get fields req
+    // const {
+    //   website,
+    //   skills,
+    //   youtube,
+    //   twitter,
+    //   instagram,
+    //   linkedin,
+    //   facebook,
+    //   // spread the rest 
+    //   ...rest
+    // } = req.body;
 
     // // create profile
 
-    const profileFields = {};
+    // const profileFields = {
+    //     user: req.user.id,
+    //     website:
+    //       website && website !== ''
+    //         ? normalize(website, { forceHttps: true })
+    //         : '',
+    //     skills: Array.isArray(skills)
+    //       ? skills
+    //       : skills.split(',').map((skill) => ' ' + skill.trim()),
+    //     ...rest
+    // };
 
-    profileFields.user = req.user.id;
-    if(company) profileFields.company = company;
-    if(website) profileFields.website = website;
-    if(location) profileFields.location = location;
-    if(bio) profileFields.bio = bio;
-    if(status) profileFields.status = status;
-    if(githubusername) profileFields.githubusername = githubusername;
-    if(skills) {
-        profileFields.skills = skills.split(',').map((skill) => ' ' + skill.trim())
-    }
+    // // socialFirlds object
 
-    console.log(skills)
+    // const socialFields = {yuotobe,twittter,instagram,linkedin,facebook};
+
+    // // normalize social fields to ensure valid url
+    // for (const [key, value] of Object.entries(socialFields)) {
+    //     if (value && value.length > 0)
+    //       socialFields[key] = normalize(value, { forceHttps: true });
+    // }
+
+    // profileFields.social = socialFields;
+
     // try {
     //     // Using upsert option (creates new doc if no match is found):
     //     let profile = await Profile.findOneAndUpdate(
@@ -82,9 +87,7 @@ router.post(
     //       { $set: profileFields },
     //       { new: true, upsert: true, setDefaultsOnInsert: true }
     //     );
-    //     await profile.save();
     //     return res.json(profile);
-
     //   } catch (err) {
     //     console.error(err.message);
     //     return res.status(500).send('Server Error');
@@ -92,17 +95,4 @@ router.post(
   }
 );
 
-// @route               GET api/profile
-// @desc                Get all profile
-// @access              public
-
-router.get('/', async (req, res) => {
-    try {
-      const profiles = await Profile.find().populate('user', ['name', 'avatar']);
-      res.json(profiles);
-    } catch (err) {
-      console.error(err.message);
-      res.status(500).send('Server Error');
-    }
-  });
 module.exports = router;

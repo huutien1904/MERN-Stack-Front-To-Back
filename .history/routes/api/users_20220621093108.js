@@ -22,14 +22,14 @@ router.post('/',[
     const errors = validationResult(req)
     console.log(errors);
 
-    //    if has error 
+//    if has error 
     if(!errors.isEmpty()){
             return res.status(400).json({
                 errors:errors.array()
             })
     }
 
-    // lấy dữ liệu gửi đi
+
     const {name,email,password} = req.body
     
     try {
@@ -46,7 +46,7 @@ router.post('/',[
                 d:'mm'
             }),{forceHttps:true}
         )
-        // create model user
+        
         user = new User({
             name,
             email,
@@ -66,7 +66,7 @@ router.post('/',[
                 id:user.id
             }
         }
-        //  create token 
+
         jwt.sign(
             payload,
             config.get('jwtSecret'),
@@ -74,7 +74,6 @@ router.post('/',[
             (err,token) =>{
                 if(err) throw err;
                 res.json({token})
-                console.log(token)
             }
             
             )

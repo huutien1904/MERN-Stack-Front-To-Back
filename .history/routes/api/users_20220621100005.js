@@ -22,14 +22,14 @@ router.post('/',[
     const errors = validationResult(req)
     console.log(errors);
 
-    //    if has error 
+//    if has error 
     if(!errors.isEmpty()){
             return res.status(400).json({
                 errors:errors.array()
             })
     }
 
-    // lấy dữ liệu gửi đi
+
     const {name,email,password} = req.body
     
     try {
