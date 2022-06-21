@@ -89,7 +89,6 @@ router.post(
         //   { $set: profileFields },
         //   { new: true, upsert: true, setDefaultsOnInsert: true }
         );
-
         if(profile){
             profile = await Profile.findOneAndUpdate(
                 { user: req.user.id },
@@ -98,7 +97,6 @@ router.post(
               );
             return res.json(profile);
         }
-        profile = new Profile(profileFields)
         await profile.save();
         return res.json(profile);
 

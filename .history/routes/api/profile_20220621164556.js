@@ -74,38 +74,21 @@ router.post(
         profileFields.skills = skills.split(',').map((skill) => ' ' + skill.trim())
     }
 
-    //  build social object
-    profileFields.social = {}
-    if(youtube) profileFields.social.youtube = youtube
-    if(twitter) profileFields.social.twitter = twitter
-    if(facebook) profileFields.social.facebook = facebook
-    if(linkedin) profileFields.social.linkedin = linkedin
-    if(instagram) profileFields.social.instagram = instagram
-     
-    try {
-        // Using upsert option (creates new doc if no match is found):
-        let profile = await Profile.findOne(
-          { user: req.user.id },
-        //   { $set: profileFields },
-        //   { new: true, upsert: true, setDefaultsOnInsert: true }
-        );
+    console.log(skills)
+    // try {
+    //     // Using upsert option (creates new doc if no match is found):
+    //     let profile = await Profile.findOneAndUpdate(
+    //       { user: req.user.id },
+    //       { $set: profileFields },
+    //       { new: true, upsert: true, setDefaultsOnInsert: true }
+    //     );
+    //     await profile.save();
+    //     return res.json(profile);
 
-        if(profile){
-            profile = await Profile.findOneAndUpdate(
-                { user: req.user.id },
-                { $set: profileFields },
-                { new: true }
-              );
-            return res.json(profile);
-        }
-        profile = new Profile(profileFields)
-        await profile.save();
-        return res.json(profile);
-
-      } catch (err) {
-        console.error(err.message);
-        return res.status(500).send('Server Error');
-      }
+    //   } catch (err) {
+    //     console.error(err.message);
+    //     return res.status(500).send('Server Error');
+    //   }
   }
 );
 

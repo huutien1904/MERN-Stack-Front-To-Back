@@ -99,7 +99,7 @@ router.post(
             return res.json(profile);
         }
         profile = new Profile(profileFields)
-        await profile.save();
+        await Profile.save();
         return res.json(profile);
 
       } catch (err) {
