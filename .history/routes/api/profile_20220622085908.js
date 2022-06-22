@@ -4,8 +4,7 @@ const auth = require("./../../middleware/auth");
 const Profile = require("../../models/Profile");
 const { check, validationResult } = require("express-validator");
 const normalize = require('normalize-url');
-const checkObjectId = require('../../middleware/checkObjectId');
-const User = require("../../models/User");
+const checkObjectId = require('../../middleware/checkObjectId')
 // @route               POST api/profile/me
 // @desc                Get current users profile
 // @access              Private
@@ -132,38 +131,28 @@ router.get(
     '/user/:user_id',
     async (req,res) => {
         try {
-            console.log(req.params.user_id);
             const profile = await Profile.findOne({user:req.params.user_id}).populate('user',['name','avatar']);
             if(!profile) return res.status(400).json({msg:'there is no profile for this user'})
             res.json(profile)
         } catch (error) {
-            
             console.error(err.message);
-            if(error.kind == 'ObjectId'){
-                return res.status(400).json({msg:'there is no profile for this user'})
-            }
-            return res.status(500).send("Server error");
+        return res.status(500).send(Server error);
         }
     }
-    
+    // checkObjectId('user_id'),
+    // async ({ params: { user_id } }, res) => {
+    //   try {
+    //     const profile = await Profile.findOne({
+    //       user: user_id
+    //     }).populate('user', ['name', 'avatar']);
+  
+    //     if (!profile) return res.status(400).json({ msg: 'Profile not found' });
+  
+    //     return res.json(profile);
+    //   } catch (err) {
+    //     console.error(err.message);
+    //     return res.status(500).json({ msg: 'Server error' });
+    //   }
+    // }
   );
-
-// @route               DELETE api/profile/user/userID
-// @desc                delete profile,user,posts
-// @access              private
-
-
-router.delete('/',auth,async(req,res) =>{
-    try {
-        // remote profile
-        await Profile.findOneAndDelete({user: req.user.id})
-        // Remove user
-        await User.findOneAndDelete({_id:req.user.id})
-
-        res.json({msg:'User deleted'})
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error');
-    }
-})
 module.exports = router;
